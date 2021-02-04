@@ -9,17 +9,17 @@ public class WalletTest {
 
     @Test
     void shouldBeAbleToPutMoneyInWallet() {
-        Wallet wallet = new Wallet();
+        Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(17.0, Currency.Rupees);
-        double moneyInRupees = wallet.amount(Currency.Rupees);
+        double money = wallet.amountInPreferredCurrency();
 
-        assertEquals(17, moneyInRupees, 0.0000001);
+        assertEquals(17, money, 0.0000001);
     }
 
     @Test
     void shouldBeAbleToTakeMoneyFromWallet() {
-        Wallet wallet = new Wallet();
+        Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(100, Currency.Rupees);
 
@@ -28,7 +28,7 @@ public class WalletTest {
 
     @Test
     void shouldBeAbleToTakeMoneyOnlyIfWalletHasEnoughMoney() {
-        Wallet wallet = new Wallet();
+        Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(100, Currency.Rupees);
 
@@ -38,13 +38,36 @@ public class WalletTest {
 
     @Test
     void shouldBeAbleToAddAndTakeMoneyInDifferentCurrency() throws NotEnoughMoneyInWalletException {
-        Wallet wallet = new Wallet();
+        Wallet wallet = new Wallet(Currency.Dollars);
 
         wallet.put(100, Currency.Dollars);
         wallet.take(485, Currency.Rupees);
-        double moneyInRupees = wallet.amount(Currency.Rupees);
+        double money = wallet.amountInCurrency(Currency.Rupees);
 
-        assertEquals(7000, moneyInRupees, 0.00001);
+        assertEquals(7000, money, 0.00001);
+    }
+
+    @Test
+    void requirementTestOne() {
+        Wallet wallet = new Wallet(Currency.Rupees);
+
+        wallet.put(50, Currency.Rupees);
+        wallet.put(1, Currency.Dollars);
+        double money = wallet.amountInPreferredCurrency();
+
+        assertEquals(124.85, money, 0.00001);
+    }
+
+    @Test
+    void requirementTestTwo() {
+        Wallet wallet = new Wallet(Currency.Dollars);
+
+        wallet.put(74.85, Currency.Rupees);
+        wallet.put(1, Currency.Dollars);
+        wallet.put(149.7, Currency.Rupees);
+        double money = wallet.amountInPreferredCurrency();
+
+        assertEquals(4, money, 0.00001);
     }
 
 }
