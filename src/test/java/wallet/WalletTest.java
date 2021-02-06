@@ -1,5 +1,7 @@
 package wallet;
 
+import Money.Currency;
+import exception.NoMoneyInWalletException;
 import exception.NotEnoughMoneyInWalletException;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +10,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class WalletTest {
 
     @Test
-    void shouldBeAbleToPutMoneyInWallet() {
+    void shouldBeAbleToPutMoneyInWallet() throws NoMoneyInWalletException {
         Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(17.0, Currency.Rupees);
@@ -18,7 +20,7 @@ public class WalletTest {
     }
 
     @Test
-    void shouldBeAbleToTakeMoneyFromWallet() {
+    void shouldBeAbleToTakeMoneyFromWallet() throws NoMoneyInWalletException {
         Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(100, Currency.Rupees);
@@ -27,7 +29,7 @@ public class WalletTest {
     }
 
     @Test
-    void shouldBeAbleToTakeMoneyOnlyIfWalletHasEnoughMoney() {
+    void shouldBeAbleToTakeMoneyOnlyIfWalletHasEnoughMoney() throws NoMoneyInWalletException {
         Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(100, Currency.Rupees);
@@ -37,7 +39,7 @@ public class WalletTest {
     }
 
     @Test
-    void shouldBeAbleToAddAndTakeMoneyInDifferentCurrency() throws NotEnoughMoneyInWalletException {
+    void shouldBeAbleToAddAndTakeMoneyInDifferentCurrency() throws NotEnoughMoneyInWalletException, NoMoneyInWalletException {
         Wallet wallet = new Wallet(Currency.Dollars);
 
         wallet.put(100, Currency.Dollars);
@@ -48,7 +50,7 @@ public class WalletTest {
     }
 
     @Test
-    void requirementTestOne() {
+    void requirementTestOne() throws NoMoneyInWalletException {
         Wallet wallet = new Wallet(Currency.Rupees);
 
         wallet.put(50, Currency.Rupees);
@@ -59,7 +61,7 @@ public class WalletTest {
     }
 
     @Test
-    void requirementTestTwo() {
+    void requirementTestTwo() throws NoMoneyInWalletException {
         Wallet wallet = new Wallet(Currency.Dollars);
 
         wallet.put(74.85, Currency.Rupees);
