@@ -1,5 +1,7 @@
 package Money;
 
+import java.util.Objects;
+
 public class Money {
 
     private final double amount;
@@ -16,5 +18,18 @@ public class Money {
 
     public Currency getCurrency() {
         return currency;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Money money = (Money) o;
+        return Double.compare(money.amount, amount) == 0 && currency == money.currency;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(amount, currency);
     }
 }
