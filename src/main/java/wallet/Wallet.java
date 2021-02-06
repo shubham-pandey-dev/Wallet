@@ -31,7 +31,8 @@ public class Wallet {
         return (money * from.inRupees) / to.inRupees;
     }
 
-    public double amountInCurrency(Currency currency) {
+    public double amountInCurrency(Currency currency) throws NoMoneyInWalletException {
+        if(money == null) throw new NoMoneyInWalletException("Wallet is not created");
         return (money.getAmount() * money.getCurrency().inRupees) / currency.inRupees;
     }
 
