@@ -1,4 +1,4 @@
-package money;
+package wallet;
 
 import java.util.Objects;
 

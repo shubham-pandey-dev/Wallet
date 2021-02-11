@@ -1,4 +1,4 @@
-package money;
+package wallet;
 
 public enum Currency {
     RUPEE(1), DOLLAR(74.85);

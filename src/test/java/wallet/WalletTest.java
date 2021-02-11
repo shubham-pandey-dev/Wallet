@@ -1,8 +1,6 @@
 package wallet;
 
 import exception.NotEnoughMoneyInWalletException;
-import money.Currency;
-import money.Money;
 import org.junit.jupiter.api.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;

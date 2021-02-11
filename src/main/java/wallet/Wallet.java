@@ -1,7 +1,5 @@
 package wallet;
 
-import money.Currency;
-import money.Money;
 import exception.NotEnoughMoneyInWalletException;
 
 public class Wallet {
@@ -39,4 +37,3 @@ public class Wallet {
     }
 
 }
-
