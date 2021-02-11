@@ -1,8 +1,7 @@
 package wallet;
 
-import Money.Currency;
-import Money.Money;
-import exception.NoMoneyInWalletException;
+import money.Currency;
+import money.Money;
 import exception.NotEnoughMoneyInWalletException;
 
 public class Wallet {
@@ -13,31 +12,29 @@ public class Wallet {
         money = new Money(0.0, preferredCurrency);
     }
 
-    public void put(double money, Currency currency) throws NoMoneyInWalletException {
-        if (this.money == null) throw new NoMoneyInWalletException("Wallet is not created");
-        money = convertCurrency(money, currency, this.money.getCurrency());
-        this.money = new Money(this.money.getAmount() + money, this.money.getCurrency());
+    public Wallet put(Money moneyToAdd) {
+        moneyToAdd = convertCurrency(moneyToAdd, this.money.getCurrency());
+        this.money = new Money(this.money.getAmount() + moneyToAdd.getAmount(), this.money.getCurrency());
+        return this;
     }
 
-    public void take(double money, Currency currency) throws NotEnoughMoneyInWalletException, NoMoneyInWalletException {
-        if (this.money == null) throw new NoMoneyInWalletException("Wallet is not created");
-        money = convertCurrency(money, currency, this.money.getCurrency());
-        if (money > this.money.getAmount())
-            throw new NotEnoughMoneyInWalletException("wallet.Wallet does not have enough money");
-        this.money = new Money(this.money.getAmount() - money, this.money.getCurrency());
+    public Wallet take(Money moneyToTake) throws NotEnoughMoneyInWalletException {
+        moneyToTake = convertCurrency(moneyToTake, this.money.getCurrency());
+        if (moneyToTake.getAmount() > this.money.getAmount())
+            throw new NotEnoughMoneyInWalletException("Wallet does not have enough money");
+        this.money = new Money(this.money.getAmount() - moneyToTake.getAmount(), this.money.getCurrency());
+        return this;
     }
 
-    private double convertCurrency(double money, Currency from, Currency to) {
-        return (money * from.inRupees) / to.inRupees;
+    private Money convertCurrency(Money money, Currency to) {
+        return new Money((money.getAmount() * money.getCurrency().inRupees) / to.inRupees, to);
     }
 
-    public double amountInCurrency(Currency currency) throws NoMoneyInWalletException {
-        if(money == null) throw new NoMoneyInWalletException("Wallet is not created");
+    public double amountIn(Currency currency) {
         return (money.getAmount() * money.getCurrency().inRupees) / currency.inRupees;
     }
 
-    public double amountInPreferredCurrency() throws NoMoneyInWalletException {
-        if (money == null) throw new NoMoneyInWalletException("Wallet is not created");
+    public double amountInPreferredCurrency() {
         return money.getAmount();
     }
 

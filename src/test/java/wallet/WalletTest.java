@@ -1,75 +1,93 @@
 package wallet;
 
-import Money.Currency;
-import exception.NoMoneyInWalletException;
 import exception.NotEnoughMoneyInWalletException;
+import money.Currency;
+import money.Money;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.closeTo;
+import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class WalletTest {
 
+    private final double ERROR = 0.000001;
+
     @Test
-    void shouldBeAbleToPutMoneyInWallet() throws NoMoneyInWalletException {
-        Wallet wallet = new Wallet(Currency.Rupees);
+    void shouldBeAbleToPutMoneyInWallet() {
+        Wallet wallet = new Wallet(Currency.RUPEE);
+        Money money = new Money(17.0, Currency.RUPEE);
 
-        wallet.put(17.0, Currency.Rupees);
-        double money = wallet.amountInPreferredCurrency();
+        wallet.put(money);
+        double moneyInWallet = wallet.amountInPreferredCurrency();
 
-        assertEquals(17, money, 0.0000001);
+        assertThat(moneyInWallet, is(closeTo(17, ERROR)));
     }
 
     @Test
-    void shouldBeAbleToTakeMoneyFromWallet() throws NoMoneyInWalletException {
-        Wallet wallet = new Wallet(Currency.Rupees);
+    void shouldBeAbleToTakeMoneyFromWallet() {
+        Wallet wallet = new Wallet(Currency.RUPEE);
+        Money moneyPut = new Money(1, Currency.DOLLAR);
+        Money moneyTake = new Money(50, Currency.RUPEE);
 
-        wallet.put(100, Currency.Rupees);
+        wallet.put(moneyPut);
 
-        assertDoesNotThrow(() -> wallet.take(50, Currency.Rupees));
+        assertDoesNotThrow(() -> wallet.take(moneyTake));
     }
 
     @Test
-    void shouldBeAbleToTakeMoneyOnlyIfWalletHasEnoughMoney() throws NoMoneyInWalletException {
-        Wallet wallet = new Wallet(Currency.Rupees);
+    void shouldBeAbleToTakeMoneyOnlyIfWalletHasEnoughMoney() {
+        Wallet wallet = new Wallet(Currency.RUPEE);
+        Money money = new Money(50, Currency.RUPEE);
+        Money moneyTake1 = new Money(50, Currency.RUPEE);
+        Money moneyTake2 = new Money(100, Currency.RUPEE);
 
-        wallet.put(100, Currency.Rupees);
+        wallet.put(money);
 
-        assertDoesNotThrow(() -> wallet.take(50, Currency.Rupees));
-        assertThrows(NotEnoughMoneyInWalletException.class, () -> wallet.take(100, Currency.Rupees));
+        assertDoesNotThrow(() -> wallet.take(moneyTake1));
+        assertThrows(NotEnoughMoneyInWalletException.class, () -> wallet.take(moneyTake2));
     }
 
     @Test
-    void shouldBeAbleToAddAndTakeMoneyInDifferentCurrency() throws NotEnoughMoneyInWalletException, NoMoneyInWalletException {
-        Wallet wallet = new Wallet(Currency.Dollars);
+    void shouldBeAbleToAddAndTakeMoneyInDifferentCurrency() throws NotEnoughMoneyInWalletException {
+        Wallet wallet = new Wallet(Currency.DOLLAR);
+        Money money1 = new Money(100, Currency.DOLLAR);
+        Money money2 = new Money(485, Currency.RUPEE);
 
-        wallet.put(100, Currency.Dollars);
-        wallet.take(485, Currency.Rupees);
-        double money = wallet.amountInCurrency(Currency.Rupees);
+        wallet.put(money1);
+        wallet.take(money2);
+        double moneyInWallet = wallet.amountIn(Currency.RUPEE);
 
-        assertEquals(7000, money, 0.00001);
+        assertThat(moneyInWallet, is(closeTo(7000, ERROR)));
     }
 
     @Test
-    void requirementTestOne() throws NoMoneyInWalletException {
-        Wallet wallet = new Wallet(Currency.Rupees);
+    void requirementTestOne() {
+        Wallet wallet = new Wallet(Currency.RUPEE);
+        Money money = new Money(50, Currency.RUPEE);
+        Money money2 = new Money(1, Currency.DOLLAR);
 
-        wallet.put(50, Currency.Rupees);
-        wallet.put(1, Currency.Dollars);
-        double money = wallet.amountInPreferredCurrency();
+        wallet.put(money);
+        wallet.put(money2);
+        double amount = wallet.amountInPreferredCurrency();
 
-        assertEquals(124.85, money, 0.00001);
+        assertThat(amount, is(closeTo(124.85, ERROR)));
     }
 
     @Test
-    void requirementTestTwo() throws NoMoneyInWalletException {
-        Wallet wallet = new Wallet(Currency.Dollars);
+    void requirementTestTwo() {
+        Wallet wallet = new Wallet(Currency.DOLLAR);
+        Money money1 = new Money(74.85, Currency.RUPEE);
+        Money money2 = new Money(1, Currency.DOLLAR);
+        Money money3 = new Money(149.7, Currency.RUPEE);
 
-        wallet.put(74.85, Currency.Rupees);
-        wallet.put(1, Currency.Dollars);
-        wallet.put(149.7, Currency.Rupees);
-        double money = wallet.amountInPreferredCurrency();
+        wallet.put(money1)
+                .put(money2)
+                .put(money3);
 
-        assertEquals(4, money, 0.00001);
+        double money = wallet.amountIn(Currency.DOLLAR);
+        assertThat(money, is(closeTo(4, ERROR)));
     }
 
 }

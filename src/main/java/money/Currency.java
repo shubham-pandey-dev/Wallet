@@ -1,8 +1,9 @@
-package Money;
+package money;
 
 public enum Currency {
-    Rupees(1), Dollars(74.85);
+    RUPEE(1), DOLLAR(74.85);
     public double inRupees;
+
     Currency(double inRupees) {
         this.inRupees = inRupees;
     }
